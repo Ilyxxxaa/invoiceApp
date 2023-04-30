@@ -1,6 +1,6 @@
 export interface IInvoiceItem {
   itemName: string;
-  qty: number;
+  qty: string;
   price: number;
   total: number;
   id: string;

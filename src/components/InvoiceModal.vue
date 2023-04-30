@@ -155,7 +155,7 @@
                 <input type="text" v-model="item.price" />
               </td>
               <td class="total flex">
-                ${{ (item.total = item.qty * item.price) }}
+                ${{ (item.total = +item.qty * item.price) }}
               </td>
               <img
                 @click="deleteInvoiceItem(item.id)"
@@ -236,8 +236,18 @@ export default defineComponent({
 
     addNewInvoiceItem() {
       this.invoiceItemList.push({
-        id: uid,
+        id: uid(),
+        itemName: "",
+        qty: "",
+        price: 0,
+        total: 0,
       });
+    },
+
+    deleteInvoiceItem(id: string) {
+      this.invoiceItemList = this.invoiceItemList.filter(
+        (item) => item.id !== id
+      );
     },
   },
   watch: {
@@ -328,6 +338,7 @@ export default defineComponent({
           .table-items {
             gap: 16px;
             font-size: 12px;
+            align-items: center;
 
             .item-name {
               flex-basis: 50%;
@@ -342,6 +353,7 @@ export default defineComponent({
             }
 
             .total {
+              height: 100%;
               flex-basis: 20%;
               align-self: center;
             }
@@ -360,6 +372,7 @@ export default defineComponent({
             margin-bottom: 24px;
 
             img {
+              cursor: pointer;
               position: absolute;
               top: 15px;
               right: 0;
