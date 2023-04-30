@@ -29,6 +29,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import { mapMutations } from "vuex";
 
 export default defineComponent({
   name: "Home",
@@ -38,6 +39,12 @@ export default defineComponent({
     };
   },
   methods: {
+    ...mapMutations(["TOGGLE_INVOICE"]),
+
+    newInvoice() {
+      this.TOGGLE_INVOICE();
+    },
+
     toggleFilterMenu() {
       this.filterMenu = !this.filterMenu;
     },
