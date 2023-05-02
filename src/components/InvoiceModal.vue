@@ -190,6 +190,8 @@ import { defineComponent } from "vue";
 import { IInvoiceItem, IInvoiceModalData } from "./types";
 import { mapMutations } from "vuex";
 import { uid } from "uid";
+import firebaseApp from "../firebase/firebaseInit";
+import { addDoc, collection, getFirestore } from "firebase/firestore/lite";
 
 export default defineComponent({
   name: "invoiceModal",
@@ -248,6 +250,65 @@ export default defineComponent({
       this.invoiceItemList = this.invoiceItemList.filter(
         (item) => item.id !== id
       );
+    },
+
+    calInvoiceTotal() {
+      this.invoiceTotal = 0;
+      this.invoiceItemList.forEach((item) => {
+        this.invoiceTotal += item.total;
+      });
+    },
+
+    publishInvoice: function () {
+      this.invoicePending = true;
+    },
+
+    saveDraft() {
+      this.invoiceDraft = true;
+    },
+
+    async uploadInvoice() {
+      if (this.invoiceItemList.length <= 0) {
+        alert("Please ensure you filled out work items!");
+        return;
+      }
+
+      this.calInvoiceTotal();
+
+      const db = getFirestore(firebaseApp);
+      const dataBase = collection(db, "invoices");
+
+      try {
+        const docRef = await addDoc(dataBase, {
+          invoiceId: uid(6),
+          billerStreetAddress: this.billerStreetAddress,
+          billerCity: this.billerCity,
+          billerZipCode: this.billerZipCode,
+          billerCountry: this.billerCountry,
+          clientName: this.clientName,
+          clientEmail: this.clientEmail,
+          clientStreetAddress: this.clientStreetAddress,
+          clientCity: this.clientCity,
+          clientZipCode: this.clientZipCode,
+          clientCountry: this.clientCountry,
+          invoiceDateUnix: this.invoiceDateUnix,
+          invoiceDate: this.invoiceDate,
+          paymentTerms: this.paymentTerms,
+          paymentDueDateUnix: this.paymentDueDateUnix,
+          paymentDueDate: this.paymentDueDate,
+          productDescription: this.productDescription,
+          invoiceItemList: this.invoiceItemList,
+          invoiceTotal: this.invoiceTotal,
+        });
+      } catch (e) {
+        console.error("Error adding document: ", e);
+      }
+
+      this.TOGGLE_INVOICE();
+    },
+
+    submitForm() {
+      this.uploadInvoice();
     },
   },
   watch: {

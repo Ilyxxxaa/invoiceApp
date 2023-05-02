@@ -25,8 +25,8 @@ export interface IInvoiceModalData {
   paymentDueDateUnix: null | number;
   paymentDueDate: null | string;
   productDescription: null;
-  invoicePending: null;
-  invoiceDraft: null;
+  invoicePending: null | boolean;
+  invoiceDraft: null | boolean;
   invoiceItemList: IInvoiceItem[];
   invoiceTotal: 0;
   dateOptions: Intl.DateTimeFormatOptions;
